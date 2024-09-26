@@ -1,4 +1,6 @@
-
+<?php 
+  $sum = 0;
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -35,6 +37,13 @@
       <strong style="color:brown"> Order!</strong>
       <?php echo $_SESSION['order']; unset($_SESSION['order'])?>
     </div>
+
+    <?php endif?>
+    <?php if (isset($_SESSION['Ok'])): ?> 
+    <div class="alert  alert-success">
+      <strong style="color:brown"> Order!</strong>
+      <?php echo $_SESSION['Ok']; unset($_SESSION['Ok'])?>
+    </div>
     <?php endif?>
     <?php if (isset($_SESSION['logout'])): ?> 
     <div class="alert  alert-success">
@@ -53,7 +62,6 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="navbar-nav mr-auto">
                   <a href="product" class="btn btn-danger inline col-md-3 m-2 text-uppercase" >Trang Chủ</a>
-                  <a href="cart" class="btn btn-danger inline col-md-3 m-2 text-uppercase">Món đã đặt</a>
                   <a href="signup" class="btn btn-danger inline col-md-3 m-2 text-uppercase">Đăng kí</a>
                   <a href="user_login" class="btn btn-danger inline col-md-3 m-2 text-uppercase">Đăng Nhập</a>
                   <a href="logout" class="btn btn-danger inline col-md-3 m-2 text-uppercase">Đăng xuất</a>
@@ -74,8 +82,8 @@
                             <br />
                             <br />
                             <a href="detail?id=<?= $item->id ?>"><h3 class="m-2 text-primary" id="detail_<?= $item->id ?>"><?= $item->product_name ?></h3></a>
+                            <p id="sell_<?= $item->id ?>" class="text-danger"><?= number_format($item->sell_price) ?> đ</p>
                             <button class="btn btn-button btn-success text-center" onclick="addCart(<?= $item->id; ?>)">Đặt ngay</button>
-                            <p id="info_<?= $item->id ?>"><?= $item->info_1 ?></p>
                         </div>
                     <?php endforeach; ?>
               </div>
@@ -132,15 +140,22 @@
       <div id="cart-form">
       </div>
       <?php foreach($order as $item) :?>
-        <div class="section1 border" style="display:flex;border: 1px solid #ccc;">
+        <div class="section1 border text-justify" style="display:flex;border: 1px solid #ccc;">
           <span class="title pt-3 pr-2 pl-2"><?=$item->getUser($item->user_id)->name?></span>
           <p class="text-center pt-3"><?=$item->getProduct($item->product_id)->product_name?></p>
           <img src="./public/<?=$item->getProduct($item->product_id)->image?>" height="80" width="80" class="pt-2 pb-2 pl-2">
           <a href="remove?id=<?= $item->id?>" class="btn btn-danger text-center pt-3 mt-3 ml-2 mr-2" style="height:50px; width:50px;">X</a>
+          <p hidden class="text-center pt-3"><?= $sell = $item->getProduct($item->product_id)->sell_price?></p>
+          <?php $sum+= $sell; $_SESSION['tong']=$sum ?>
         </div>
         <br />
       <?php endforeach?>
       <a href="removeAll" class="btn btn-primary text-center m-a" style="">DELETE ALL</a>
+      <h2 class="text-success">Tổng tiền:</h2>
+      <h3 class="text-"><?php if(!isset($_SESSION['tong'])){echo 0;}else{
+                        echo number_format($_SESSION['tong']);
+                      }
+                      ?>  Đ</h3>
     </section>
         </div>
       </div>

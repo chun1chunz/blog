@@ -4,7 +4,15 @@ require_once './models/Invoice.php';
 class HomeController
 {
     public function index(){
-        //$model = Product::all();
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+               
+                $a = getdate();
+                $mday = $a['mday'];
+                $mon = $a['mon'];
+                $year = $a['year'];
+                $weekday = $a['weekday'];
+
+                $date_create = $weekday.', '.$mday.':'.$mon.':'.$year;
         
         $total_records = Product::count();
         $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -27,7 +35,7 @@ class HomeController
                 $mon = $a['mon'];
                 $year = $a['year'];
                 $weekday = $a['weekday'];
-//var_dump($weekday); die;
+
                 $date_create = $weekday.', '.$mday.':'.$mon.':'.$year;
         
         $order = Order::where('created_at','=','"'.$date_create.'"')->get();
@@ -42,7 +50,7 @@ class HomeController
         $a = '';
         if(isset($_COOKIE)){
             $a = $_COOKIE['role'];
-            if($a == 1){
+            if(isset($a)){
                 unset($_SESSION['cart'][$key], $_SESSION['tong'],$_SESSION['total']);
                 $dele = Order::delete($key);
                 $_SESSION['success']="Xóa món đã đặt thành công!!!";
@@ -77,7 +85,6 @@ class HomeController
                 $mon = $a['mon'];
                 $year = $a['year'];
                 $weekday = $a['weekday'];
-//var_dump($weekday); die;
                 $date_create = $weekday.', '.$mday.':'.$mon.':'.$year;
                 
                 $model->date_hi = $date_create;
@@ -98,8 +105,6 @@ class HomeController
                 
                 $_SESSION['order']="Đặt thành công!!!";
                
-                //$order = Order::where('created_at','=','"'.$date_create.'"');
-                // var_dump($order); die;
                 header('location: ./product');
                 exit();
         }
